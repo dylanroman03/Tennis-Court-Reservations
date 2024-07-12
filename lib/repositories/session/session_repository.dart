@@ -7,7 +7,12 @@ class SessionRepository {
   SessionRepository({required this.databaseProvider});
 
   Future<void> createDatabase() async {
+    await databaseProvider.dropTables();
     await databaseProvider.createTables();
+  }
+
+  deleteDatabase() async {
+    await databaseProvider.dropTables();
   }
 
   Future<void> updateIsLogin() async {

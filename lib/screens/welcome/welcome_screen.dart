@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +21,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          log('state $state');
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -54,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(
                   width: size.width * 0.6,
                   child: RoundedButton(
-                    text: 'Iniciar Session',
+                    text: 'Iniciar Sesión',
                     onPressed: () {
                       Navigator.push(
                         context,

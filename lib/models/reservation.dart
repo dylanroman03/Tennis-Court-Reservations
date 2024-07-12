@@ -1,4 +1,5 @@
-const String createTableReservation = '''CREATE TABLE reservation (
+const String createTableReservation =
+    '''CREATE TABLE IF NOT EXISTS reservation (
   id INTEGER PRIMARY KEY,
   idCourt INTEGER NOT NULL,
   date DATETIME NOT NULL,

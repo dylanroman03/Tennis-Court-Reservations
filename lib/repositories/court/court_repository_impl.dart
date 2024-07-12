@@ -3,9 +3,9 @@ import 'package:tennis/models/court.dart';
 import 'package:tennis/repositories/court/court_repository.dart';
 
 class CourtRepositoryImpl implements CourtRepository {
-  final DatabaseProvider db;
+  DatabaseProvider db = DatabaseProvider.instance;
 
-  CourtRepositoryImpl({required this.db});
+  CourtRepositoryImpl();
 
   @override
   Future<bool> saveCourt(CourtModel court) async {

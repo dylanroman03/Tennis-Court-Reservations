@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis/bloc/court_bloc.dart';
 import 'package:tennis/bloc/login_bloc.dart';
 import 'package:tennis/screens/components/rounded_buttom.dart';
 import 'package:tennis/screens/home/home_screen.dart';
@@ -12,17 +13,27 @@ class LoginScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          if (state is LoginSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const HomeScreen(),
-              ),
-            );
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state is LoginSuccess) {
+                BlocProvider.of<CourtBloc>(context).add(SaveCourts());
+              }
+            },
+          ),
+          BlocListener<CourtBloc, CourtState>(
+            listener: (context, state) {
+              if (state is CourtLoaded) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,8 +51,9 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: size.height * 0.05),
+                      margin: EdgeInsets.symmetric(
+                        vertical: size.height * 0.05,
+                      ),
                       child: const Text(
                         'Iniciar sesión',
                         style: TextStyle(
@@ -66,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.visibility),
                           onPressed: () {
-                            // Acción de mostrar/ocultar contraseña
+                            //TODO: Option to hidden password
                           },
                         ),
                       ),
@@ -80,9 +92,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Checkbox(
                               value: true,
-                              onChanged: (value) {
-                                // Acción de recordar contraseña
-                              },
+                              onChanged: (value) {},
                             ),
                             const Text('Recordar contraseña'),
                           ],
@@ -90,9 +100,7 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {
-                        // Acción de recuperar contraseña
-                      },
+                      onPressed: () {},
                       child: const Text('¿Olvidaste tu contraseña?'),
                     ),
                     const SizedBox(height: 20),

@@ -1,4 +1,3 @@
-// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tennis/models/court.dart';
@@ -13,7 +12,8 @@ class DatabaseProvider {
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('tennis.db');
+    _database = await _initDB('adn.db');
+    // _database = await _initDB('state.db');
     return _database!;
   }
 
@@ -33,18 +33,8 @@ class DatabaseProvider {
     db.close();
   }
 
-  createTables() async {
-    final db = await database;
-
-    await db.execute(createTableCourt);
-    await db.execute(createTableReservation);
-  }
-
   dropTables() async {
-    List<String> tables = [
-      'court',
-      'reservation',
-    ];
+    List<String> tables = ['court', 'reservation'];
 
     final db = await instance.database;
 
@@ -55,10 +45,14 @@ class DatabaseProvider {
     }
   }
 
-  Future<int> executeDelete(
-    sql, {
-    List items = const [],
-  }) async {
+  createTables() async {
+    final db = await database;
+
+    await db.execute(createTableCourt);
+    await db.execute(createTableReservation);
+  }
+
+  Future<int> executeDelete(sql, {List items = const []}) async {
     final db = await database;
     return await db.rawDelete(sql, items);
   }
@@ -81,10 +75,5 @@ class DatabaseProvider {
   Future<int> updateQuery(String query, {List items = const []}) async {
     final db = await database;
     return await db.rawUpdate(query, items);
-  }
-
-  Future<void> transaction(Future Function(Transaction txn) action) async {
-    final db = await database;
-    db.transaction(action);
   }
 }

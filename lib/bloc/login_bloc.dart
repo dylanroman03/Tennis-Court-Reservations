@@ -2,10 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis/repositories/session/session_repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final SessionRepository userRepository;
+  final SessionRepository sessionRepository;
 
-  LoginBloc({required this.userRepository}) : super(LoginInitial()) {
+  LoginBloc({required this.sessionRepository}) : super(LoginInitial()) {
     on<LoginButtonPressed>(_onLoginButtonPressed);
+    on<LogoutButtonPressed>(_onLogoutButtonPressed);
     on<CheckLoginStatus>(_onCheckLoginStatus);
   }
 
@@ -13,16 +14,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginButtonPressed event,
     Emitter<LoginState> emit,
   ) async {
-    await userRepository.createDatabase();
-    await userRepository.updateIsLogin();
+    await sessionRepository.createDatabase();
+    await sessionRepository.updateIsLogin();
     emit(LoginSuccess());
+  }
+
+  void _onLogoutButtonPressed(
+    LogoutButtonPressed event,
+    Emitter<LoginState> emit,
+  ) async {
+    await sessionRepository.deleteDatabase();
+    await sessionRepository.logout();
+    emit(LoginInitial());
   }
 
   void _onCheckLoginStatus(
     CheckLoginStatus event,
     Emitter<LoginState> emit,
   ) async {
-    final isLoggedIn = await userRepository.isLoggedIn();
+    final isLoggedIn = await sessionRepository.isLoggedIn();
     if (isLoggedIn) {
       emit(LoginSuccess());
     }
@@ -34,9 +44,11 @@ abstract class LoginEvent {}
 
 class LoginButtonPressed extends LoginEvent {}
 
+class LogoutButtonPressed extends LoginEvent {}
+
 class CheckLoginStatus extends LoginEvent {}
 
-// Estates
+// States
 abstract class LoginState {}
 
 class LoginInitial extends LoginState {}

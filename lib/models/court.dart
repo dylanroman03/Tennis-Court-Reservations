@@ -1,4 +1,4 @@
-const String createTableCourt = '''CREATE TABLE court (
+const String createTableCourt = '''CREATE TABLE IF NOT EXISTS court (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   type char NOT NULL,
