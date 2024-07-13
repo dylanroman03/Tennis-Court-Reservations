@@ -25,10 +25,10 @@ class ReservationRepositoryImpl implements ReservationRepository {
   }
 
   @override
-  Future<bool> delete(ReservationModel reservation) async {
+  Future<bool> delete(int id) async {
     int deletedRows = await db.executeDelete(
       'DELETE FROM reservation WHERE id = ?',
-      items: [reservation.id],
+      items: [id],
     );
 
     return deletedRows > 0;

@@ -10,21 +10,29 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
   ReservationBloc({required this.reservationRepository})
       : super(ReservationInitial()) {
     on<GetReservations>(_onGetReservations);
+    on<DeleteReservation>(_onDeleteReservation);
   }
 
   void _onGetReservations(
     GetReservations event,
     Emitter<ReservationState> emit,
   ) async {
-    log("Inside _onGetReservations");
-
     try {
       final reservations = await reservationRepository.getAllReservations();
       emit(ReservationLoaded(reservations: reservations));
     } catch (e) {
-      log("e $e");
+      log("Error $e");
       emit(ReservationError(message: e.toString()));
     }
+  }
+
+  Future<void> _onDeleteReservation(
+    DeleteReservation event,
+    Emitter<ReservationState> emit,
+  ) async {
+    final id = event.idReservation;
+    await reservationRepository.delete(id);
+    add(GetReservations());
   }
 }
 
@@ -32,6 +40,12 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
 abstract class ReservationEvent {}
 
 class GetReservations extends ReservationEvent {}
+
+class DeleteReservation extends ReservationEvent {
+  final int idReservation;
+
+  DeleteReservation({required this.idReservation});
+}
 
 // States
 abstract class ReservationState {}
@@ -43,6 +57,8 @@ class ReservationLoaded extends ReservationState {
 
   ReservationLoaded({required this.reservations});
 }
+
+// class ReservationDeleted extends ReservationState {}
 
 class ReservationError extends ReservationState {
   final String message;

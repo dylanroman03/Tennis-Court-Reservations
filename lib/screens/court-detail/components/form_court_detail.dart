@@ -85,7 +85,7 @@ class _FormCourtDetailState extends State<FormCourtDetail> {
       listener: (context, state) {
         if (state is CourtDetailLoaded) {
           isCourtAvailable = state.isAvailable;
-          if (isDateSelected && !isCourtAvailable) {
+          if (selectedDate != null && !isCourtAvailable) {
             showAvailabilityDialog();
           }
         } else if (state is ReservationSuccess) {

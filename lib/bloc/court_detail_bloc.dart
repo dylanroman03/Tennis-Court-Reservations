@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis/bloc/reservation_bloc.dart';
 import 'package:tennis/models/court.dart';
@@ -30,13 +28,6 @@ class CourtDetailBloc extends Bloc<CourtDetailEvent, CourtDetailState> {
         final reservations = state.reservations
             .where((reservation) => reservation.idCourt == event.court.id)
             .toList();
-
-        log("reservations: ${reservations.length}");
-        log("reservations: ${state.reservations.length}");
-
-        for (var element in reservations) {
-          log(element.date.toString());
-        }
 
         emit(CourtDetailLoaded(
           reservations: reservations,

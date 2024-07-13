@@ -13,8 +13,6 @@ class CourtBloc extends Bloc<CourtEvent, CourtState> {
   }
 
   void _onGetCourts(GetCourts event, Emitter<CourtState> emit) async {
-    log("Inside _onGetCourts");
-
     try {
       final courts = await courtRepository.getAllCourts();
       emit(CourtLoaded(courts: courts));
