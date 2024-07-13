@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tennis/bloc/login_bloc.dart';
+import 'package:tennis/blocs/login_bloc.dart';
 import 'package:tennis/screens/components/rounded_buttom.dart';
 import 'package:tennis/screens/home/home_screen.dart';
 import 'package:tennis/screens/login/login_screen.dart';

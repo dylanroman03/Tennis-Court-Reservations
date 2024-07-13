@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tennis/bloc/court_detail_bloc.dart';
-import 'package:tennis/bloc/reservation_bloc.dart';
+import 'package:tennis/blocs/court_detail_bloc.dart';
+import 'package:tennis/blocs/reservation_bloc.dart';
+import 'package:tennis/blocs/wheater_bloc.dart';
 import 'package:tennis/models/court.dart';
 import 'package:tennis/repositories/reservation/reservation_respository_impl.dart';
+import 'package:tennis/repositories/wheater/wheater_repository_impl.dart';
 import 'package:tennis/screens/court-detail/components/form_court_detail.dart';
 
 class CourtDetailScreen extends StatefulWidget {
@@ -25,18 +27,23 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return BlocProvider(
-      create: (BuildContext context) {
-        return CourtDetailBloc(
-          reservationRepository:
-              RepositoryProvider.of<ReservationRepositoryImpl>(context),
-          reservationBloc: BlocProvider.of<ReservationBloc>(context),
-        )..add(
-            InitializeCourtDetail(
-              court: widget.court,
-            ),
-          );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (BuildContext context) {
+          return CourtDetailBloc(
+            reservationRepository:
+                RepositoryProvider.of<ReservationRepositoryImpl>(context),
+            reservationBloc: BlocProvider.of<ReservationBloc>(context),
+          )..add(
+              InitializeCourtDetail(
+                court: widget.court,
+              ),
+            );
+        }),
+        BlocProvider(create: (BuildContext context) {
+          return WeatherBloc(weatherRepository: WeatherRepositoryImpl());
+        }),
+      ],
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(

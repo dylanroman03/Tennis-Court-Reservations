@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tennis/bloc/reservation_bloc.dart';
+import 'package:tennis/blocs/reservation_bloc.dart';
 import 'package:tennis/models/court.dart';
 import 'package:tennis/models/reservation.dart';
 import 'package:tennis/repositories/reservation/reservation_repository.dart';
@@ -86,6 +88,8 @@ class CourtDetailBloc extends Bloc<CourtDetailEvent, CourtDetailState> {
   ) async {
     try {
       final reservationsState = state;
+      log("price ${event.reservation.price}");
+
       if (reservationsState is CourtDetailLoaded) {
         await reservationRepository.save(event.reservation);
         emit(ReservationSuccess());

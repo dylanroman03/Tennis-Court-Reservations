@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tennis/bloc/court_bloc.dart';
-import 'package:tennis/bloc/login_bloc.dart';
-import 'package:tennis/bloc/reservation_bloc.dart';
+import 'package:tennis/blocs/court_bloc.dart';
+import 'package:tennis/blocs/login_bloc.dart';
+import 'package:tennis/blocs/reservation_bloc.dart';
 import 'package:tennis/screens/home/components/court_list.dart';
 import 'package:tennis/screens/home/components/reservation_list.dart';
 import 'package:tennis/screens/welcome/welcome_screen.dart';
@@ -90,7 +90,9 @@ class HomeScreen extends StatelessWidget {
               BlocBuilder<ReservationBloc, ReservationState>(
                 builder: (context, state) {
                   if (state is ReservationLoaded) {
-                    return ReservationList(reservations: state.reservations);
+                    return ReservationList(
+                      reservations: state.reservations,
+                    );
                   } else {
                     BlocProvider.of<ReservationBloc>(context)
                         .add(GetReservations());

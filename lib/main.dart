@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tennis/bloc/court_bloc.dart';
-import 'package:tennis/bloc/login_bloc.dart';
-import 'package:tennis/bloc/reservation_bloc.dart';
+import 'package:tennis/blocs/court_bloc.dart';
+import 'package:tennis/blocs/login_bloc.dart';
+import 'package:tennis/blocs/reservation_bloc.dart';
 import 'package:tennis/database/database_provider.dart';
 import 'package:tennis/repositories/court/court_repository_impl.dart';
 import 'package:tennis/repositories/reservation/reservation_respository_impl.dart';

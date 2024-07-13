@@ -14,7 +14,7 @@ class ReservationRepositoryImpl implements ReservationRepository {
       [
         reservation.id,
         reservation.idCourt,
-        reservation.date.toIso8601String(),
+        reservation.date.toString(),
         reservation.reservedBy,
         reservation.hours,
         reservation.price,
