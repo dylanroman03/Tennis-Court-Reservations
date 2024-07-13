@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:tennis/blocs/court_bloc.dart';
 import 'package:tennis/blocs/reservation_bloc.dart';
 import 'package:tennis/models/court.dart';
@@ -48,11 +47,11 @@ class ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return BlocBuilder<CourtBloc, CourtState>(
       builder: (context, state) {
         if (state is CourtLoaded) {
-          log(state.courts.toString());
-
           CourtModel court =
               state.courts.where((e) => reservation.idCourt == e.id).first;
 
@@ -61,25 +60,61 @@ class ReservationCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Cancha ${court.name}",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: size.width * 0.05),
+                        child: Image.asset(
+                          court.imageUrl,
+                          height: size.width * 0.1,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            court.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text('Reservado por: ${reservation.reservedBy}'),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today, size: 18),
+                              Text(
+                                DateFormat('d-mm-yy').format(reservation.date),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.timer_outlined, size: 18),
+                              Text(
+                                '${reservation.hours} Horas  |  \$${reservation.price}',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text('Reservado por: ${reservation.reservedBy}'),
-                  Text('Fecha: ${reservation.date}'),
-                  Text('Horas: ${reservation.hours}'),
-                  Text('Precio: \$${reservation.price}'),
-                  RoundedButton(
-                    text: "Delete",
-                    color: Colors.red.shade400,
-                    onPressed: () {
-                      confirmDelete(context);
-                    },
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: size.width * 0.05,
+                      bottom: size.width * 0.03,
+                    ),
+                    width: size.width * 0.6,
+                    child: RoundedButton(
+                      text: "Delete",
+                      color: Colors.red.shade400,
+                      onPressed: () {
+                        confirmDelete(context);
+                      },
+                    ),
                   )
                 ],
               ),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +21,6 @@ class FormCourtDetail extends StatefulWidget {
 }
 
 class _FormCourtDetailState extends State<FormCourtDetail> {
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController clientNameController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? startTime;
@@ -32,6 +29,7 @@ class _FormCourtDetailState extends State<FormCourtDetail> {
   bool isDateSelected = true;
   bool isStartTimeSelected = true;
   bool isEndTimeSelected = true;
+  bool isClientNameSelected = true;
 
   bool isCourtAvailable = false;
 
@@ -94,169 +92,206 @@ class _FormCourtDetailState extends State<FormCourtDetail> {
           context.read<ReservationBloc>().add(GetReservations());
         }
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocBuilder<WeatherBloc, WeatherState>(
-            builder: (BuildContext context, WeatherState state) {
-              log("State $state");
-              if (state is WeatherLoaded) {
-                return Text(
-                  'Probabilidad de lluvia: ${state.rainProbability}',
-                );
-              } else if (state is WeatherLoading) {
-                return const Text('Error al obtener la probabilidad');
-              } else {
-                return const Text('No se pudo obtener la probabilidad');
-              }
-            },
-          ),
-          const SubtitleForm(title: 'Establecer fecha y hora'),
-          GestureDetector(
-            onTap: () async {
-              DateTime? date = await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: DateTime(2100),
-              );
-              if (date != null) {
-                setState(() {
-                  selectedDate = date;
-                  isDateSelected = true;
-                  BlocProvider.of<CourtDetailBloc>(context).add(
-                    CheckAvailabilityEvent(date: date),
-                  );
-
-                  BlocProvider.of<WeatherBloc>(context).add(
-                    FetchWeather(date: date),
-                  );
-                });
-              }
-            },
-            child: InputContainerForm(
-              showError: isDateSelected,
+      child: BlocBuilder<CourtDetailBloc, CourtDetailState>(
+        builder: (BuildContext context, CourtDetailState state) {
+          if (state is ReservationSuccess) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  selectedDate == null
-                      ? 'Fecha'
-                      : DateFormat('dd/MM/yyyy').format(selectedDate!),
-                ),
-                const Icon(Icons.calendar_today, color: Colors.grey),
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: size.height * 0.02),
+                    width: size.width * 0.8,
+                    child: RoundedButton(
+                      text: "Pagar",
+                      color: const Color.fromARGB(255, 170, 247, 36),
+                      onPressed: () {},
+                    ),
+                  ),
+                )
               ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    TimeOfDay? time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
+            );
+          } else {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder<WeatherBloc, WeatherState>(
+                  builder: (BuildContext context, WeatherState state) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: size.width * 0.02),
+                          child: Icon(
+                            state is WeatherLoaded
+                                ? Icons.cloud_outlined
+                                : state is WeatherLoading
+                                    ? Icons.autorenew
+                                    : Icons.close,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        if (state is WeatherLoaded)
+                          Text('${state.rainProbability}%'),
+                      ],
                     );
-                    if (time != null) {
-                      setState(() {
-                        startTime = time;
-                        isStartTimeSelected = true;
-                      });
-                    }
                   },
-                  child: InputContainerForm(
-                    showError: isStartTimeSelected,
-                    children: [
-                      Text(
-                        startTime == null
-                            ? 'Hora de inicio'
-                            : startTime!.format(context),
-                      ),
-                      const Icon(Icons.access_time, color: Colors.grey),
-                    ],
-                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: GestureDetector(
+                const SubtitleForm(title: 'Establecer fecha y hora'),
+                GestureDetector(
                   onTap: () async {
-                    TimeOfDay? time = await showTimePicker(
+                    DateTime? date = await showDatePicker(
                       context: context,
-                      initialTime: TimeOfDay.now(),
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2100),
                     );
-                    if (time != null) {
+                    if (date != null) {
                       setState(() {
-                        endTime = time;
-                        isEndTimeSelected = true;
-                      });
-                    }
-                  },
-                  child: InputContainerForm(
-                    showError: isEndTimeSelected,
-                    children: [
-                      Text(
-                        endTime == null
-                            ? 'Hora de fin'
-                            : endTime!.format(context),
-                      ),
-                      const Icon(Icons.access_time, color: Colors.grey),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SubtitleForm(title: 'Establecer Cliente'),
-          TextFormField(
-            controller: clientNameController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Reservar para...',
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor ingrese el nombre del cliente';
-              }
-              return null;
-            },
-          ),
-          const SubtitleForm(title: 'Agregar un comentario'),
-          const TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Agregar un comentario...',
-            ),
-            maxLines: 3,
-          ),
-          Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              width: size.width * 0.8,
-              child: RoundedButton(
-                text: 'Reservar',
-                onPressed: () {
-                  setState(() {
-                    isDateSelected = selectedDate != null;
-                    isStartTimeSelected = startTime != null;
-                    isEndTimeSelected = endTime != null;
-                  });
+                        selectedDate = date;
+                        isDateSelected = true;
+                        BlocProvider.of<CourtDetailBloc>(context).add(
+                          CheckAvailabilityEvent(date: date),
+                        );
 
-                  if (_formKey.currentState!.validate() &&
-                      isDateSelected &&
-                      isStartTimeSelected &&
-                      isEndTimeSelected) {
-                    if (isCourtAvailable) {
-                      createReservation();
-                    } else {
-                      showAvailabilityDialog();
+                        BlocProvider.of<WeatherBloc>(context).add(
+                          FetchWeather(date: date),
+                        );
+                      });
                     }
-                  }
-                },
-                color: const Color.fromARGB(255, 170, 247, 36),
-              ),
-            ),
-          ),
-        ],
+                  },
+                  child: InputContainerForm(
+                    showError: isDateSelected,
+                    children: [
+                      Text(
+                        selectedDate == null
+                            ? 'Fecha'
+                            : DateFormat('dd/MM/yyyy').format(selectedDate!),
+                      ),
+                      const Icon(Icons.calendar_today, color: Colors.grey),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          TimeOfDay? time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (time != null) {
+                            setState(() {
+                              startTime = time;
+                              isStartTimeSelected = true;
+                            });
+                          }
+                        },
+                        child: InputContainerForm(
+                          showError: isStartTimeSelected,
+                          children: [
+                            Text(
+                              startTime == null
+                                  ? 'Hora de inicio'
+                                  : startTime!.format(context),
+                            ),
+                            const Icon(Icons.access_time, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          TimeOfDay? time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (time != null) {
+                            setState(() {
+                              endTime = time;
+                              isEndTimeSelected = true;
+                            });
+                          }
+                        },
+                        child: InputContainerForm(
+                          showError: isEndTimeSelected,
+                          children: [
+                            Text(
+                              endTime == null
+                                  ? 'Hora de fin'
+                                  : endTime!.format(context),
+                            ),
+                            const Icon(Icons.access_time, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SubtitleForm(title: 'Establecer Cliente'),
+                TextFormField(
+                  controller: clientNameController,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: isClientNameSelected ? Colors.black : Colors.red,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: isClientNameSelected ? Colors.black : Colors.red,
+                      ),
+                    ),
+                    hintText: 'Reservar para...',
+                  ),
+                ),
+                const SubtitleForm(title: 'Agregar un comentario'),
+                const TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Agregar un comentario...',
+                  ),
+                  maxLines: 3,
+                ),
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    width: size.width * 0.8,
+                    child: RoundedButton(
+                      text: 'Reservar',
+                      onPressed: () {
+                        setState(() {
+                          isDateSelected = selectedDate != null;
+                          isStartTimeSelected = startTime != null;
+                          isEndTimeSelected = endTime != null;
+                          isClientNameSelected =
+                              clientNameController.text.isNotEmpty;
+                        });
+
+                        if (clientNameController.text.isNotEmpty &&
+                            isDateSelected &&
+                            isStartTimeSelected &&
+                            isEndTimeSelected) {
+                          if (isCourtAvailable) {
+                            createReservation();
+                          } else {
+                            showAvailabilityDialog();
+                          }
+                        }
+                      },
+                      color: const Color.fromARGB(255, 170, 247, 36),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

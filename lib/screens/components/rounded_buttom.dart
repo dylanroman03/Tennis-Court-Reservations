@@ -7,7 +7,7 @@ class RoundedButton extends StatelessWidget {
     required this.onPressed,
     super.key,
     this.textColor = Colors.white,
-    this.rounded = 18,
+    this.rounded = 15,
   });
   final String text;
   final Color color;

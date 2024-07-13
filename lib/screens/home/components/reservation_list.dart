@@ -14,13 +14,23 @@ class ReservationList extends StatefulWidget {
 class _ReservationListState extends State<ReservationList> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return widget.reservations.isEmpty
-        ? const Text("No has reservado aún")
+        ? Padding(
+            padding: EdgeInsets.only(
+              left: size.width * 0.05,
+              top: size.height * 0.01,
+            ),
+            child: const Text("No has reservado aún"),
+          )
         : Column(
             children: [
               for (var element in widget.reservations)
-                ReservationCard(
-                  reservation: element,
+                SizedBox(
+                  width: size.width,
+                  child: ReservationCard(
+                    reservation: element,
+                  ),
                 ),
             ],
           );

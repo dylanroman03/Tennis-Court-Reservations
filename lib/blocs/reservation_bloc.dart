@@ -11,6 +11,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
       : super(ReservationInitial()) {
     on<GetReservations>(_onGetReservations);
     on<DeleteReservation>(_onDeleteReservation);
+    on<RebootReservation>(_onRebootReservation);
   }
 
   void _onGetReservations(
@@ -34,6 +35,13 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     await reservationRepository.delete(id);
     add(GetReservations());
   }
+
+  void _onRebootReservation(
+    RebootReservation event,
+    Emitter<ReservationState> emit,
+  ) {
+    emit(ReservationInitial());
+  }
 }
 
 // Events
@@ -46,6 +54,8 @@ class DeleteReservation extends ReservationEvent {
 
   DeleteReservation({required this.idReservation});
 }
+
+class RebootReservation extends ReservationEvent {}
 
 // States
 abstract class ReservationState {}

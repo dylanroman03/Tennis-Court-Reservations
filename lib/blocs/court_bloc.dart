@@ -36,14 +36,14 @@ class CourtBloc extends Bloc<CourtEvent, CourtState> {
           id: 2,
           name: 'Sport Box',
           type: 'B',
-          imageUrl: 'assets/Enmascarar.png',
+          imageUrl: 'assets/Enmascarar-2.png',
           priceByHour: 20,
         ),
         CourtModel(
           id: 3,
           name: 'Cacha Multiple',
           type: 'C',
-          imageUrl: 'assets/Enmascarar.png',
+          imageUrl: 'assets/Enmascarar-4.png',
           priceByHour: 30,
         ),
       ];

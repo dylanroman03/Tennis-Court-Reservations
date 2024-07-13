@@ -45,108 +45,122 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         }),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.favorite_border),
-              onPressed: () {},
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    widget.court.imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 250,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: size.width * 0.74,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.court.name,
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Cancha tipo ${widget.court.type}',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: size.width * 0.17,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '\$${widget.court.priceByHour}',
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Por hora',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: size.height * 0.01),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.access_time, color: Colors.grey),
+                              SizedBox(width: 5),
+                              Text('Disponible: 7:00 am a 4:00 pm'),
+                            ],
+                          ),
+                        ),
+                        const Row(
+                          children: [
+                            Icon(Icons.location_on, color: Colors.grey),
+                            SizedBox(width: 5),
+                            Text('Vía Av. Caracas y Av. P° Caroní'),
+                          ],
+                        ),
+                        const FormCourtDetail()
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 16,
+              left: 16,
+              child: FloatingActionButton(
+                heroTag: 'back',
+                mini: true,
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back, color: Colors.black),
+              ),
+            ),
+            Positioned(
+              top: 16,
+              right: 16,
+              child: FloatingActionButton(
+                heroTag: 'favorite',
+                mini: true,
+                backgroundColor: Colors.white,
+                onPressed: () {},
+                child: const Icon(Icons.favorite_border, color: Colors.black),
+              ),
             ),
           ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                widget.court.imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: size.width * 0.74,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.court.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Cancha tipo ${widget.court.type}',
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.17,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '\$${widget.court.priceByHour}',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              const Text(
-                                'Por hora',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: size.height * 0.01),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.access_time, color: Colors.grey),
-                          SizedBox(width: 5),
-                          Text('Disponible: 7:00 am a 4:00 pm'),
-                        ],
-                      ),
-                    ),
-                    const Row(
-                      children: [
-                        Icon(Icons.location_on, color: Colors.grey),
-                        SizedBox(width: 5),
-                        Text('Vía Av. Caracas y Av. P° Caroní'),
-                      ],
-                    ),
-                    const FormCourtDetail()
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
