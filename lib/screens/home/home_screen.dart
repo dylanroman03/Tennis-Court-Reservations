@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis/bloc/court_bloc.dart';
 import 'package:tennis/bloc/login_bloc.dart';
+import 'package:tennis/bloc/reservation_bloc.dart';
 import 'package:tennis/screens/home/components/court_list.dart';
+import 'package:tennis/screens/home/components/reservation_list.dart';
 import 'package:tennis/screens/welcome/welcome_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,14 +28,6 @@ class HomeScreen extends StatelessWidget {
             }
           },
         ),
-        // BlocListener<CourtBloc, CourtState>(
-        //   listener: (context, state) {
-        //     log("state $state");
-        //     if (state is! CourtLoaded) {
-        //       BlocProvider.of<CourtBloc>(context).add(GetCourts());
-        //     }
-        //   },
-        // ),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -93,26 +87,19 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // ReservationList(
-              //   reservations: [
-              //     ReservationModel(
-              //       id: 1,
-              //       idCourt: 2,
-              //       date: DateTime.now(),
-              //       reservedBy: 'Luis',
-              //       hours: 0,
-              //       price: 0,
-              //     ),
-              //     ReservationModel(
-              //       id: 2,
-              //       idCourt: 2,
-              //       date: DateTime.now(),
-              //       reservedBy: 'Maria',
-              //       hours: 0,
-              //       price: 0,
-              //     ),
-              // ],
-              // ),
+              BlocBuilder<ReservationBloc, ReservationState>(
+                builder: (context, state) {
+                  if (state is ReservationLoaded) {
+                    return ReservationList(reservations: state.reservations);
+                  } else {
+                    BlocProvider.of<ReservationBloc>(context)
+                        .add(GetReservations());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

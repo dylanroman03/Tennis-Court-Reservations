@@ -14,13 +14,15 @@ class ReservationList extends StatefulWidget {
 class _ReservationListState extends State<ReservationList> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var element in widget.reservations)
-          ReservationCard(
-            reservation: element,
-          ),
-      ],
-    );
+    return widget.reservations.isEmpty
+        ? const Text("No has reservado aún")
+        : Column(
+            children: [
+              for (var element in widget.reservations)
+                ReservationCard(
+                  reservation: element,
+                ),
+            ],
+          );
   }
 }

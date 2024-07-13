@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis/bloc/court_bloc.dart';
 import 'package:tennis/bloc/login_bloc.dart';
+import 'package:tennis/bloc/reservation_bloc.dart';
 import 'package:tennis/database/database_provider.dart';
 import 'package:tennis/repositories/court/court_repository_impl.dart';
+import 'package:tennis/repositories/reservation/reservation_respository_impl.dart';
 import 'package:tennis/repositories/session/session_repository.dart';
 import 'package:tennis/screens/welcome/welcome_screen.dart';
 
@@ -26,9 +28,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(
           create: (context) => CourtRepositoryImpl(),
         ),
-        // RepositoryProvider(
-        //   create: (context) => ReservationRepositoryImpl(),
-        // ),
+        RepositoryProvider(
+          create: (context) => ReservationRepositoryImpl(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -44,12 +46,12 @@ class MyApp extends StatelessWidget {
                   RepositoryProvider.of<CourtRepositoryImpl>(context),
             ),
           ),
-          // BlocProvider(
-          //   create: (context) => ReservationBlo(
-          //     courtRepository:
-          //         RepositoryProvider.of<CourtRepositoryImpl>(context),
-          //   ),
-          // ),
+          BlocProvider(
+            create: (context) => ReservationBloc(
+              reservationRepository:
+                  RepositoryProvider.of<ReservationRepositoryImpl>(context),
+            ),
+          ),
         ],
         child: const MaterialApp(
           debugShowCheckedModeBanner: false,

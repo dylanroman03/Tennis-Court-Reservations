@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tennis/models/court.dart';
 import 'package:tennis/screens/components/rounded_buttom.dart';
+import 'package:tennis/screens/court-detail/court_detail_screen.dart';
 
 class CourtCard extends StatelessWidget {
   const CourtCard({required this.court, super.key});
@@ -43,7 +44,16 @@ class CourtCard extends StatelessWidget {
                   margin: EdgeInsets.only(top: size.height * 0.02),
                   width: size.width * 0.4,
                   child: RoundedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CourtDetailScreen(
+                            court: court,
+                          ),
+                        ),
+                      );
+                    },
                     text: 'Reservar',
                     color: const Color.fromARGB(255, 170, 247, 36),
                   ),

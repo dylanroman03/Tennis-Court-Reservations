@@ -26,11 +26,11 @@ class ReservationModel {
   });
 
   factory ReservationModel.fromJson(Map<String, dynamic> e) => ReservationModel(
-        id: int.tryParse(e['id']) ?? 0,
-        idCourt: int.tryParse(e['idCourt']) ?? 0,
+        id: int.tryParse(e['id'].toString()) ?? 0,
+        idCourt: int.tryParse(e['idCourt'].toString()) ?? 0,
         date: DateTime.parse(e['date']),
         reservedBy: e['reservedBy'],
-        hours: int.tryParse(e['hours']) ?? 0,
-        price: double.tryParse(e['price']) ?? 0.00,
+        hours: int.tryParse(e['hours'].toString()) ?? 0,
+        price: double.tryParse(e['price'].toString()) ?? 0.00,
       );
 }

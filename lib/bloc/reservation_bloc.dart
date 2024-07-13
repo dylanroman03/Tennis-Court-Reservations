@@ -1,0 +1,51 @@
+import 'dart:developer';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis/models/reservation.dart';
+import 'package:tennis/repositories/reservation/reservation_repository.dart';
+
+class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
+  final ReservationRepository reservationRepository;
+
+  ReservationBloc({required this.reservationRepository})
+      : super(ReservationInitial()) {
+    on<GetReservations>(_onGetReservations);
+  }
+
+  void _onGetReservations(
+    GetReservations event,
+    Emitter<ReservationState> emit,
+  ) async {
+    log("Inside _onGetReservations");
+
+    try {
+      final reservations = await reservationRepository.getAllReservations();
+      emit(ReservationLoaded(reservations: reservations));
+    } catch (e) {
+      log("e $e");
+      emit(ReservationError(message: e.toString()));
+    }
+  }
+}
+
+// Events
+abstract class ReservationEvent {}
+
+class GetReservations extends ReservationEvent {}
+
+// States
+abstract class ReservationState {}
+
+class ReservationInitial extends ReservationState {}
+
+class ReservationLoaded extends ReservationState {
+  final List<ReservationModel> reservations;
+
+  ReservationLoaded({required this.reservations});
+}
+
+class ReservationError extends ReservationState {
+  final String message;
+
+  ReservationError({required this.message});
+}
